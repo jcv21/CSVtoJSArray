@@ -1,33 +1,21 @@
 import path from 'path';
-import config from './package.json';
-import webpack from 'webpack';
-import dotenv from 'dotenv';
-
-dotenv.config();
-
-const PROD = process.env.NODE_ENV === 'production';
-
-let plugins = [];
-
-PROD ? [
-    plugins.push(new webpack.optimize.UglifyJsPlugin({
-      compress: { warnings: false }
-    }))
-  ] : '';
 
 module.exports = {
-  entry: path.resolve(__dirname, config.main),
-  devtool: 'source-map',
+  entry: path.resolve(__dirname, "src/index.js"),
   output: {
-    library: process.env.NAME,
-    libraryTarget: process.env.TARGET,
-    path: __dirname,
-    filename: (PROD) ? 'build/csvjs.min.js' : 'build/csvjs.js'
+    path: path.resolve(__dirname, "dist"),
+    filename: "index_bundle.js",
+    library: "$",
+    libraryTarget: "umd",
   },
   module: {
-    loaders: [
-      {test: /\.es6?$/, exclude: /node_modules/, loader: 'babel-loader'}
-    ]
+    rules: [
+      {
+        test: /\.(js)$/,
+        exclude: /node_modules/,
+        use: "babel-loader",
+      },
+    ],
   },
-  plugins: plugins
-};
+  mode: "development",
+}
